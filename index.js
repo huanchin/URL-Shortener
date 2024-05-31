@@ -5,12 +5,12 @@ function md5ToBase62(input) {
   // update(data) 方法用於向 Hash 物件提供數據，該數據將用於計算哈希值。 input 是我們要計算雜湊值的輸入字串。
   // digest(encoding) 方法計算出雜湊值並以指定的編碼格式傳回。在這個例子中，"hex" 指定傳回雜湊值的格式為十六進位字串。
   const md5Hash = crypto.createHash("md5").update(input).digest("hex");
-  console.log("md5Hash: ", md5Hash);
-  console.log("type: ", typeof md5Hash);
+  // console.log("md5Hash: ", md5Hash);
+  // console.log("type: ", typeof md5Hash);
 
   let num = BigInt("0x" + md5Hash);
 
-  console.log("BigInt: ", num);
+  // console.log("BigInt: ", num);
 
   const base62Chars =
     "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
