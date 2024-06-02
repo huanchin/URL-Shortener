@@ -2,7 +2,7 @@ import crypto from "crypto";
 // import AWS from "aws-sdk";
 import mongoose from "mongoose";
 import Url from "./urlModel.js";
-import User from "./userModel.js";
+// import User from "./userModel.js";
 
 let isConnected;
 
@@ -54,16 +54,29 @@ export const handler = async (event) => {
       throw new Error("URL is missing from the input");
     }
 
+    let result = await Url.find({ longurl: url });
+
+    if (result[0]) {
+      return {
+        statusCode: 200,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Headers": "Content-Type",
+          "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+        },
+        body: result,
+      };
+    }
+
     const shortUrl = md5ToBase62(url).slice(0, 8);
-    const finalUrl = `https://${shortUrl}`;
+    const finalUrl = `https://r5pm4i5o76.execute-api.ap-southeast-2.amazonaws.com/v1/url?shorturl=${shortUrl}`;
 
     const payload = {
-      userId: "665adb6426688cd8f9f914c3",
       shorturl: finalUrl,
       longurl: url,
     };
 
-    const result = await Url.create(payload);
+    result = await Url.create(payload);
     console.log(result);
 
     // const params = {
@@ -88,16 +101,11 @@ export const handler = async (event) => {
         "Access-Control-Allow-Headers": "Content-Type",
         "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
       },
-      body: payload,
+      body: result,
     };
   } catch (error) {
-    // 捕获并处理异常
-    console.error("Error invoking the Lambda function:", error);
-
-    // 打印错误消息
     console.error("Error message:", error.message);
 
-    // 如果有堆栈跟踪，打印堆栈跟踪信息
     if (error.stack) {
       console.error("Stack trace:", error.stack);
     }
@@ -113,5 +121,3 @@ export const handler = async (event) => {
     };
   }
 };
-
-handler();
